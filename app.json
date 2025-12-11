@@ -1,24 +1,27 @@
 {
   "expo": {
-    "name": "aair-todo-app",
-    "slug": "aair-todo-app",
+    "name": "Aair Task",
+    "slug": "aair-task-app",
     "version": "1.0.0",
-
+    "scheme": "aair-task-app",
     "web": {
       "favicon": "./assets/favicon.png"
     },
-
     "experiments": {
       "tsconfigPaths": true
     },
-
-    "plugins": [],
-
+    "plugins": [
+      "expo-router",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
+        }
+      ]
+    ],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-
     "userInterfaceStyle": "light",
-
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",

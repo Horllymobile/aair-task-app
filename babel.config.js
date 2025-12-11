@@ -3,9 +3,14 @@ module.exports = function (api) {
   let plugins = [];
 
   plugins.push('react-native-worklets/plugin');
+  plugins.push('react-native-paper/babel');
 
   return {
-    presets: [['babel-preset-expo', { jsxImportSource: 'nativewind' }], 'nativewind/babel'],
+    presets: [
+      ['babel-preset-expo', { jsxImportSource: 'nativewind' }],
+      'nativewind/babel',
+      // 'module:metro-react-native-babel-preset',
+    ],
 
     plugins,
   };
