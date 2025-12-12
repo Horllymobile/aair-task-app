@@ -21,13 +21,11 @@ export const useTaskStore = create(
       addTask: (item) =>
         set((state) => {
           const tasks = [...state.tasks];
-
           tasks.push(item);
-
-          console.log(tasks);
           return {
             ...state,
             tasks: tasks,
+            refetchTask: true,
           };
         }),
       refetchTask: false,
@@ -47,32 +45,31 @@ export const useTaskStore = create(
           return {
             ...state,
             tasks: tasks,
+            refetchTask: true,
           };
         }),
       markComplete: (item) =>
         set((state) => {
           const tasks = [...state.tasks];
-          console.log(tasks);
           const position = tasks.findIndex((to) => to.id === item.id);
           const task = tasks[position];
           task.status = TASK_STATUS.COMPLETED;
-          console.log(tasks);
           return {
             ...state,
             tasks: tasks,
+            refetchTask: true,
           };
         }),
       markUnComplete: (item) =>
         set((state) => {
           const tasks = [...state.tasks];
-          console.log(tasks);
           const position = tasks.findIndex((to) => to.id === item.id);
           const task = tasks[position];
           task.status = TASK_STATUS.PENDING;
-          console.log(tasks);
           return {
             ...state,
             Tasks: tasks,
+            refetchTask: true,
           };
         }),
       setTaskData: (data) =>

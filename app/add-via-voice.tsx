@@ -9,6 +9,12 @@ import {
   useAudioRecorderState,
 } from 'expo-audio';
 import { Audio } from 'expo-av';
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: '', // Due to lack of open ai subscription, won't be able to add my api key
+  dangerouslyAllowBrowser: true,
+});
 
 export default function AddTaskViaVoice() {
   const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
@@ -41,7 +47,34 @@ export default function AddTaskViaVoice() {
     await audioRecorder.stop();
     setAudioUri(audioRecorder.uri);
     setStarted(false);
+
+    if (audioRecorder.uri) {
+      console.log(audioRecorder.uri);
+      const text = await transcribeAudio(audioRecorder.uri);
+      console.log(text);
+
+      if (text) {
+        const tasks = text.split('and');
+        for (let i = 0; i < tasks.length - 1; i++) {
+          createTaskFromText(tasks[i]);
+        }
+      }
+    }
   };
+
+  function createTaskFromText(text: string) {
+    const now = new Date().toISOString();
+    const id = Date.now().toString();
+
+    return {
+      createdDate: now,
+      description: '',
+      dueDate: now,
+      id,
+      status: 'pending',
+      title: text.trim(),
+    };
+  }
 
   const playAudio = async () => {
     if (!audioUri) return;
@@ -91,6 +124,27 @@ export default function AddTaskViaVoice() {
       });
     })();
   }, []);
+
+  const transcribeAudio = async (uri: string) => {
+    try {
+      const audioBlob = await uriToBlob(uri);
+
+      const result = await openai.audio.transcriptions.create({
+        file: audioBlob, // <=== NO File(), use Blob directly
+        model: 'gpt-4o-mini-transcribe',
+      });
+
+      console.log('Transcription:', result.text);
+      return result.text;
+    } catch (err) {
+      console.error('Transcription error:', err);
+    }
+  };
+
+  async function uriToBlob(uri: string): Promise<Blob> {
+    const response = await fetch(uri);
+    return await response.blob();
+  }
 
   return (
     <PaperProvider>

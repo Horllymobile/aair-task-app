@@ -26,7 +26,7 @@ const initialLayout = {
   height: Dimensions.get('window').height,
 };
 export default function TaskList() {
-  const { tasks, deleteTask, markComplete, markUnComplete, refetchTask } = useTaskStore();
+  const { tasks, deleteTask, markComplete, markUnComplete } = useTaskStore();
   const [status, setStatus] = useState(TASK_STATUS.PENDING);
   const [searchedTask, setSearchedTask] = useState<Task[]>(sortByStatus(status));
   const [search, setSearch] = useState('');
@@ -42,10 +42,8 @@ export default function TaskList() {
   }, [search]);
 
   useEffect(() => {
-    if (refetchTask) {
-      setSearchedTask(sortByStatus(TASK_STATUS.PENDING));
-    }
-  }, [refetchTask]);
+    setSearchedTask(sortByStatus(TASK_STATUS.PENDING));
+  }, [tasks]);
 
   function sortByStatus(status: TASK_STATUS) {
     return tasks.sort((a, b) => {
@@ -96,8 +94,8 @@ export default function TaskList() {
             <TaskItem
               task={item}
               deleteTask={deleteTask}
-              markComplete={markComplete}
-              markUnComplete={markUnComplete}
+              complete={markComplete}
+              unComplete={markUnComplete}
             />
           )}
         />
